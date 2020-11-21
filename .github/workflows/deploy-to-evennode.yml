@@ -14,7 +14,7 @@ jobs:
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
       with:
-        key: ${{ secrets.SSH_KEY }}
+        key: abcd
         known_hosts: " "
     - name: Add git.evennode.com to known_hosts
       run: |
