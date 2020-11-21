@@ -24,7 +24,7 @@ jobs:
         fetch-depth: 0
     - name: Deploy to evennode.com
       run: |
-        git remote add evennode ${{ secrets.EVENNODE_REPO_URL }}
-        git config --global user.email "${{ secrets.GIT_EMAIL }}"
-        git config --global user.name "${{ secrets.GIT_NAME }}"
+        git remote add evennode git@git.evennode.com:ea3d023e99cb3e0a0ee0b4c6082152b7.git
+        git config --global user.email "max.mingxu@gmail.com"
+        git config --global user.name "bestPlayer_xu"
         git push evennode +master
