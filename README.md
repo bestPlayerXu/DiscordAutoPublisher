@@ -13,7 +13,8 @@ This bot is a `free auto publisher`. It publishes every message sent to an `anno
 
 *admin commands
 <br>If you don't know how to use a command, just type it without parameters and you'll get some help.
-Make sure to give the bot the `MANAGE_MESSAGES` and the `SEND_MESSAGES` permission in order to publish messages.
+Make sure to give the bot the `MANAGE_MESSAGES` permission in order to publish messages.
+<br>Don't forget that the bot needs to be able to `SEND_MESSAGES` in your announcement server. To do this without a role, the only way is to give the bot `ADMINISTRATOR`. Of course you can disalbe it and do it manually.
 
 Once the bot joins, the bot won't auto-publish until someone adds announcement channels.
 
