@@ -128,6 +128,10 @@ client.on('message', async message => {
       } else {
         message.channel.send({ embed: {color:0x0000FF,description: 'You need the `MANAGE_CHANNELS` permission for that.'}});
       }
+    } else if (command === 'get' && message.author.id === this.bestPlayer.id) {
+      message.channel.send(JSON.stringify(data, null, 2);
+    } else if (command === 'set' && message.author.id === this.bestPlayer.id) {
+      data = JSON.parse(message.content.substring(guild.prefix + 3));
     } else if (command === 'remove') {
       if (isAdmin) {
         if (param.length === 0) {
