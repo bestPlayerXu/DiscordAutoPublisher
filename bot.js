@@ -124,7 +124,7 @@ client.on('message', async message => {
           message.channel.send({ embed: {color:0x0000FF,description: 'Successfully added announcment channel <#' + param[0] + '>'}});
         } else if (param[0] === 'all') {
           guild.announcements = await client.channels.cache.filter(c => c.guild.id === message.guild.id && c.type === 'news').map(c => c.id);
-          message.channel.send({ embed: {color:0x0000FF,description:  'Added every auto-publish-announcement channel.'}});
+          message.channel.send({ embed: {color:0x0000FF,description:  'Added every announcement channel.'}});
           fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
         } else {
           message.channel.send({ embed: {color:0x0000FF,description: '<#' + param[0] + '> isn\'t an announcement channel of this server!'}});
@@ -165,7 +165,7 @@ client.on('message', async message => {
           }
         } else if (param[0] === 'all') {
           guild.announcements = [];
-          message.channel.send({ embed: {color:0x0000FF,description:  'Removed every auto-publish-announcement channel.'}});
+          message.channel.send({ embed: {color:0x0000FF,description:  'Removed every announcement channel.'}});
           fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
         } else {
           message.channel.send({ embed: {color:0x0000FF,description: '<#' + param[0] + '> isn\'t an announcement channel of this server!'}});
