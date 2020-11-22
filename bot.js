@@ -88,7 +88,7 @@ client.on('message', async message => {
               text: 'Made by bestPlayer_xu#0702',
               icon_url: this.bestPlayer.avatarURL()
             },
-            description: 'Prefix: `' + guild.prefix + '`\n\nCommands:\n`add`: Add an announcement channel where I can auto-publish messages.\n`remove`: Remove an announcement channel where I can auto-publish messages.\n`view`: View the added announcement channels of this server.\n`ping`: Get this bot\'s ping.\n`prefix`: See this server\'s prefix or change it.\n`help`: Get help command (that\'s this one).\n\nIf you don\'t know how to use a command, just type it without parameter and you\'ll get some help.\n\nIf you have questions, join our [support server](https://discord.gg/NYCvrdedWz)!'
+            description: 'Prefix: `' + guild.prefix + '`\n\nCommands:\n`add`: Add an announcement channel where I can auto-publish messages.\n`remove`: Remove an announcement channel where I can auto-publish messages.\n`view`: View the added announcement channels of this server.\n`ping`: Get this bot\'s ping.\n`prefix`: See this server\'s prefix or change it.\n`help`: Get help command (that\'s this one).\n`about`: Get more info about this bot.\n\nIf you don\'t know how to use a command, just type it without parameter and you\'ll get some help.\n\nIf you have questions, join our [support server](https://discord.gg/NYCvrdedWz)!'
         }
       }
       message.channel.send(embed);
@@ -109,7 +109,7 @@ client.on('message', async message => {
               text: 'Made by bestPlayer_xu#0702',
               icon_url: this.bestPlayer.avatarURL()
             },
-            description:  'The `add` command needs (exactly) _one_ parameter. This parameter can be either the id or the #channel.```e.g.: ' + guild.prefix + 'add #MyAnnouncementChannel```or```e.g.' + guild.prefix + 'add 123456789```'
+            description:  'The `add` command needs (exactly) _one_ parameter. This parameter can be either the id or the #channel.```e.g.: ' + guild.prefix + 'add #MyAnnouncementChannel```or```e.g.' + guild.prefix + 'add 123456789```\nYou can add every channel with `all` as a parameter.```e.g.: ' + guild.prefix + 'add all```'
             }});
           return;
         }
@@ -122,6 +122,10 @@ client.on('message', async message => {
           guild.announcements.push(param[0]);
           fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
           message.channel.send({ embed: {color:0x0000FF,description: 'Successfully added announcment channel <#' + param[0] + '>'}});
+        } else if (param[0] === 'all') {
+          guild.announcements = await client.channels.cache.filter(c => c.guild.id === message.guild.id && c.type === 'news').map(c => c.id);
+          message.channel.send({ embed: {color:0x0000FF,description:  'Added every auto-publish-announcement channel.'}});
+          fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
         } else {
           message.channel.send({ embed: {color:0x0000FF,description: '<#' + param[0] + '> isn\'t an announcement channel of this server!'}});
         }
@@ -129,9 +133,10 @@ client.on('message', async message => {
         message.channel.send({ embed: {color:0x0000FF,description: 'You need the `MANAGE_CHANNELS` permission for that.'}});
       }
     } else if (command === 'get' && message.author.id === this.bestPlayer.id) {
-      message.channel.send(JSON.stringify(data, null, 2);
+      message.channel.send(JSON.stringify(data, null, 2));
     } else if (command === 'set' && message.author.id === this.bestPlayer.id) {
-      data = JSON.parse(message.content.substring(guild.prefix + 3));
+      data = JSON.parse(param.join(''));
+      fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
     } else if (command === 'remove') {
       if (isAdmin) {
         if (param.length === 0) {
@@ -146,7 +151,7 @@ client.on('message', async message => {
             footer: {
               text: 'Made by bestPlayer_xu#0702',
               icon_url: this.bestPlayer.avatarURL()
-            }, description: 'The `remove` command needs (exactly) _one_ parameter. This parameter can be either the id or the #channel.```e.g.: ' + guild.prefix + 'remove #MyAnnouncementChannel```or```e.g.' + guild.prefix + 'remove 123456789```'}});
+            }, description: 'The `remove` command needs (exactly) _one_ parameter. This parameter can be either the id or the #channel.```e.g.: ' + guild.prefix + 'remove #MyAnnouncementChannel```or```e.g.' + guild.prefix + 'remove 123456789```\nYou can remove every channel with `all` as a parameter.```e.g.: ' + guild.prefix + 'remove all```'}});
           return;
         }
         var c = await client.channels.cache.get(param[0]);
@@ -158,6 +163,10 @@ client.on('message', async message => {
           } else {
             message.channel.send({ embed: {color:0x0000FF,description:  '<#' + param[0] + '> isn\'t even an announcement channel I need to auto-publish!'}});
           }
+        } else if (param[0] === 'all') {
+          guild.announcements = [];
+          message.channel.send({ embed: {color:0x0000FF,description:  'Removed every auto-publish-announcement channel.'}});
+          fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
         } else {
           message.channel.send({ embed: {color:0x0000FF,description: '<#' + param[0] + '> isn\'t an announcement channel of this server!'}});
         }
@@ -167,7 +176,7 @@ client.on('message', async message => {
     } else if (command === 'view') {
       message.channel.send({ embed: {
         color: 0x0000FF,
-        title: 'Remove',
+        title: 'View',
         author: {
           name: 'Auto Publisher discord bot',
           icon_url: client.user.avatarURL(),
@@ -178,8 +187,7 @@ client.on('message', async message => {
           icon_url: this.bestPlayer.avatarURL()
         }, description: 'I am publishing every message in these channels:\n' + guild.announcements.map(a => '<#' + a + '>').join('\n') + '\n\nAdd or remove channels with the `add` and `remove` command.'
       }});
-    }
-    if (command === 'prefix') {
+    } else if (command === 'prefix') {
       if (param.length === 0) {
         message.channel.send({ embed: {
           color: 0x0000FF,
