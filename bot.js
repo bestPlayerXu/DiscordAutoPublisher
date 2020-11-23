@@ -40,7 +40,7 @@ client.on('message', async message => {
     param.shift();
     param = param.map(p => p = p.replace(/<@|<#|>/g, ''));
 
-    var isAdmin = message.member.hasPermission('MANAGE_CHANNELS') || this.message.author.id === bestPlayer.id;
+    var isAdmin = message.member.hasPermission('MANAGE_CHANNELS') || this.message.author.id === this.bestPlayer.id;
     if (command === 'about') {
       var embed = {
         embed: {
