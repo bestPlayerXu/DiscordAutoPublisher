@@ -54,7 +54,7 @@ client.on('message', async message => {
           description: 'This is a **bot** that **auto-publishes every message** in an **announcement channel** by either a **bot or a user**.\n\nMight be useful if a bot can\'t publish messages in your announcement channel, either because the bot can\'t do it or you have to pay money.\n',
           fields: [{
               name: 'Invite the bot!',
-              value: '[Discord Bot Invite](https://discord.com/api/oauth2/authorize?client_id=778256454914015245&permissions=8192&scope=bot)'
+              value: '[Discord Bot Invite](https://discord.com/api/oauth2/authorize?client_id=778256454914015245&permissions=93192&scope=bot)'
             }, {
               name: 'Vote for the bot!',
               value: '[Vote here](https://top.gg/bot/778256454914015245/vote)',
@@ -88,7 +88,7 @@ client.on('message', async message => {
               text: 'Made by bestPlayer_xu#0702',
               icon_url: this.bestPlayer.avatarURL()
             },
-            description: 'Prefix: `' + guild.prefix + '`\n\nCommands:\n`add*`: Add an announcement channel where I can auto-publish messages.\n`remove*`: Remove an announcement channel where I can auto-publish messages.\n`view`: View the added announcement channels of this server.\n`ping`: Get this bot\'s ping.\n`prefix`: See this server\'s prefix or change it.\n`help`: Get help command (that\'s this one).\n`about`: Get more info about this bot.\n\nIf you don\'t know how to use a command, just type it without parameter and you\'ll get some help.\n\n*admin commands\n\nMake sure to give the bot the `MANAGE_MESSAGES` permission in order to publish messages.\n\nIf you have questions, join our [support server](https://discord.gg/NYCvrdedWz)!'
+            description: 'Prefix: `' + guild.prefix + '`\n\nCommands:\n`add*`: Add an announcement channel where I can auto-publish messages.\n`remove*`: Remove an announcement channel where I can auto-publish messages.\n`view`: View the added announcement channels of this server.\n`ping`: Get this bot\'s ping.\n`prefix`: See this server\'s prefix or change it.\n`help`: Get help command (that\'s this one).\n`about`: Get more info about this bot.\n\nIf you don\'t know how to use a command, just type it without parameter and you\'ll get some help.\n\n*admin commands\n\nMake sure to give the bot the `MANAGE_MESSAGES` AND the `SEND_MESSAGES` permission in order to publish messages.\n\nIf you have questions, join our [support server](https://discord.gg/NYCvrdedWz)!'
         }
       }
       message.channel.send(embed);
