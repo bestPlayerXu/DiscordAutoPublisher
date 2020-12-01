@@ -1,14 +1,17 @@
+//ya know what this does
 const Discord = require('discord.js');
 const fs = require('fs');
 const client = new Discord.Client();
-
+//make ./data.data a var
 var data = JSON.parse(fs.readFileSync('data.data', 'utf8'));
 
 console.log(data);
 
 client.on('ready', async () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  //gets the owner
   this.bestPlayer = await client.users.fetch('556593706313187338');
+  //set client presence
   client.user.setPresence({
       activity: { 
           name: 'ap!help',
@@ -16,11 +19,14 @@ client.on('ready', async () => {
       },
       status: 'online'
   });
+  //sets there username to Auto Publisher
   client.user.setUsername('Auto Publisher');
 });
 
 client.on('message', async message => {
+    //gets the guild id from data.data file 
   var guild = data[message.guild.id];
+  //if there is no guild id there it wil make it then write it to data.data
   if (!guild) {
     data[message.guild.id] = {
       announcements: [],
@@ -28,19 +34,24 @@ client.on('message', async message => {
     };
     guild = data[message.guild.id];
   }
+  //when a message is sent see if it is a news channel then see if it is in the announcement channel list in data.data file
   if (message.channel.type === 'news') {
     if (guild.announcements.find(a => a === message.channel.id)) {
       message.crosspost();
     }
     return;
   }
+//if it starts with the set prefix for that guild and notbeen sent by a bot execute code in ths if statment 
   if (message.content.startsWith(guild.prefix) && !message.author.bot) {
+      //makes the mesage content a var
     var command = message.content.substring(guild.prefix.length).split(' ')[0].toLowerCase();
+    //regex confoshong 404 brain not found google it your self 
     var param = message.content.split(/ |\n/g);
     param.shift();
     param = param.map(p => p = p.replace(/<@|<#|>/g, ''));
 
     var isAdmin = message.member.hasPermission('MANAGE_CHANNELS') || message.author.id === this.bestPlayer.id;
+    //the about command
     if (command === 'about') {
       var embed = {
         embed: {
@@ -74,7 +85,9 @@ client.on('message', async message => {
         }
       }
       message.channel.send(embed);
-    } else if (command === 'help') {
+    } 
+    //the help command
+    else if (command === 'help') {
       var embed = {
           embed: {
             color: 0x0000FF,
@@ -88,13 +101,18 @@ client.on('message', async message => {
               text: 'Made by bestPlayer_xu#0702',
               icon_url: this.bestPlayer.avatarURL()
             },
-            description: 'Prefix: `' + guild.prefix + '`\n\nCommands:\n`add*`: Add an announcement channel where I can auto-publish messages.\n`remove*`: Remove an announcement channel where I can auto-publish messages.\n`view`: View the added announcement channels of this server.\n`ping`: Get this bot\'s ping.\n`prefix`: See this server\'s prefix or change it.\n`help`: Get help command (that\'s this one).\n`about`: Get more info about this bot.\n\nIf you don\'t know how to use a command, just type it without parameter and you\'ll get some help.\n\n*admin commands\n\nMake sure to give the bot the `MANAGE_MESSAGES` AND the `SEND_MESSAGES` permission in order to publish messages.\n\nIf you have questions, join our [support server](https://discord.gg/NYCvrdedWz)!'
+            description: 'Prefix: `' + guild.prefix + '`\n\nCommands:\n`add*`: Add an announcement channel where I can auto-publish messages.\n`remove*`: Remove an announcement channel where I can auto-publish messages.\n`view`: View the added announcement channels of this server.\n`ping`: Get this bot\'s ping.\n`prefix`: See this server\'s prefix or change it.\n`help`: Get help command (that\'s this one).\n`about`: Get more info about this bot.\n\nIf you don\'t know how to use a command, just type it without parameter and you\'ll get some help.\n\n*admin commands\n\nMake sure to give the bot the `MANAGE_MESSAGES` the `SEND_MESSAGES` and the `EMBED_LINKS` permission in order to publish and send messages.\n\nIf you have questions, join our [support server](https://discord.gg/NYCvrdedWz)!'
         }
       }
       message.channel.send(embed);
-    } else if (command === 'ping') {
+    } 
+    //the ping command
+    else if (command === 'ping') {
+        //gets bot latency and api latency
       message.channel.send({ embed: { description: `🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms` }});
-    } else if (command === 'add') {
+    }
+    //the add command 
+    else if (command === 'add') {
       if (isAdmin) {
         if (param.length === 0) {
           message.channel.send({ embed: {
@@ -113,15 +131,20 @@ client.on('message', async message => {
             }});
           return;
         }
+        //gets the channel id from the add command 
         var c = await client.channels.cache.get(param[0]);
+        //if the cannel is a news channel exe code in there 
         if (c && c.guild.id === message.guild.id && c.type === 'news') {
+            //if its allready been added return 
           if (guild.announcements.find(a => a === param[0])) {
             message.channel.send({ embed: {color:0x0000FF,description: 'No need to add channel <#' + param[0] + '> twice :D'}});
             return;
           }
+          //send channel id to data.data and write it 
           guild.announcements.push(param[0]);
           fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
           message.channel.send({ embed: {color:0x0000FF,description: 'Successfully added announcment channel <#' + param[0] + '>'}});
+          //if you put all it adds every channel
         } else if (param[0] === 'all') {
           guild.announcements = await client.channels.cache.filter(c => c.guild.id === message.guild.id && c.type === 'news').map(c => c.id);
           message.channel.send({ embed: {color:0x0000FF,description:  'Added every announcement channel.'}});
@@ -132,11 +155,14 @@ client.on('message', async message => {
       } else {
         message.channel.send({ embed: {color:0x0000FF,description: 'You need the `MANAGE_CHANNELS` permission for that.'}});
       }
+      //if your owner ya can get the json data from data.data file
     } else if (command === 'get' && message.author.id === this.bestPlayer.id) {
       message.channel.send(JSON.stringify(data, null, 2));
+      //if your owner ya can add some json data to data.data file
     } else if (command === 'set' && message.author.id === this.bestPlayer.id) {
       data = JSON.parse(param.join(''));
       fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
+      //if your owner ya can remove some json data from data.data file
     } else if (command === 'remove') {
       if (isAdmin) {
         if (param.length === 0) {
@@ -173,6 +199,7 @@ client.on('message', async message => {
       } else {
         message.channel.send({ embed: {color:0x0000FF,description: 'You need the `MANAGE_CHANNELS` permission for that.'}});
       }
+      //the view command
     } else if (command === 'view') {
       message.channel.send({ embed: {
         color: 0x0000FF,
@@ -187,7 +214,9 @@ client.on('message', async message => {
           icon_url: this.bestPlayer.avatarURL()
         }, description: 'I am publishing every message in these channels:\n' + guild.announcements.map(a => '<#' + a + '>').join('\n') + '\n\nAdd or remove channels with the `add` and `remove` command.'
       }});
+      //the prefix command
     } else if (command === 'prefix') {
+        //if you dont supply a prefix to set 
       if (param.length === 0) {
         message.channel.send({ embed: {
           color: 0x0000FF,
@@ -203,11 +232,15 @@ client.on('message', async message => {
           }, description: 'The current prefix for this server is `' + guild.prefix + '`.\n\nChange it with the prefix command together with a new prefix.```e.g.: ' + guild.prefix + 'prefix ap!```\n=> this sets the prefix to `ap!`'
         }});
       } else {
+          //if they can manage channels it allows them to set a prefix
         if (isAdmin) {
+            //changes the prefix in data.data for that guild id
           guild.prefix = param[0];
           message.channel.send({ embed: {color:0x0000FF,description: 'Set the prefix to `' + guild.prefix + '`.'}});
+          //writes the new changes to data.data
           fs.writeFileSync('data.data', JSON.stringify(data, null, 2));
         } else {
+            //you havent got permission to do that so sends this embed
           message.channel.send({ embed: {color:0x0000FF,description: 'You need the `MANAGE_CHANNELS` permission for that.'}});
         }
       }
